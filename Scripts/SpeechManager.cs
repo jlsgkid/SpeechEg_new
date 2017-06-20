@@ -33,7 +33,7 @@ public class SpeechManager : MonoBehaviour {
 	
 	public void speechLi(string str){
 		//kuang.text = str;
-		this.curses = str;
+		this.curses = str; 
 	}
 
 }
