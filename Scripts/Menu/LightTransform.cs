@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class LightTransform : MonoBehaviour {
 
-	public GameObject transLight;
-	//public bool isIn=false;
-	public float distance = 0;	
+	public GameObject transLight;	
 	public float m_liveTime = 4.0f;
 	public Transform mozhang;
 	//public Transform orig;
