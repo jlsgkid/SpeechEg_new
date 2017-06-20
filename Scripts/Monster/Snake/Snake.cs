@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Snake : MonoBehaviour {
 
+	//ステータス
 	public enum State
 	{
 		IDLE,
@@ -13,7 +14,9 @@ public class Snake : MonoBehaviour {
 		DIE
 	}
 	public State state;
+	//アニメ
 	private Animation anim;
+	//生命
 	[SerializeField]
 	private int life = 100;
 	public Slider xuetiao;
@@ -21,30 +24,33 @@ public class Snake : MonoBehaviour {
 	private float timer = 0;
 	private Transform player;
 	public float walkSpeed = 2.0f;
-
+	//プレイヤーとの距離
+	private float dis = 0.0f;
+	
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		state = State.IDLE;
 		anim = this.GetComponent<Animation> ();
-		player = GameObject.FindGameObjectWithTag ("Player").transform;
-		ps = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerState> ();
+		GameObject playerObj =  GameObject.FindGameObjectWithTag ("Player") as GameObject;
+		player = playerObj.transform;
+		ps = playerObj.GetComponent<PlayerState> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		AnimationControl();
-		if (this.life <= 0) {
-			state = State.DIE;
-		}
-		if(state == State.DIE){
-			xuetiao.gameObject.SetActive (false);
-			Destroy (this.gameObject, 2.3f);
-			return;
-		}
-
 		xuetiao.value = this.life;
 		timer += Time.deltaTime;
-		float dis = Vector3.Distance(transform.position, player.position);
+		//消滅される判断
+		if (this.life <= 0) {
+			state = State.DIE;
+			xuetiao.gameObject.SetActive (false);
+			Destroy (this.gameObject, 2.4f);
+			return;
+		}
+		//if(state == State.DIE){
+		//}
+		dis = Vector3.Distance(transform.position, player.position);
 		//Debug.Log (dis);
 		if (dis < 10 && dis > 3.5f) {
 			state = State.WALK;
@@ -57,13 +63,14 @@ public class Snake : MonoBehaviour {
 		}
 
 		if(state == State.ATTACK){
-			if(timer > 1.0f){
-				ps.GetDamage (30);
+			//蛇の攻撃間
+			if(timer > 0.5f){
+				//プレイヤーに攻撃する
+				ps.GetDamage (40);
 				ps.xuetiaoFadeIn ();
 				timer = 0;
 			}
 		}
-		//Debug.Log ("ssss---:" + life);
 	}
 
 	void WalkToPlay(){
@@ -93,7 +100,7 @@ public class Snake : MonoBehaviour {
 			break;
 		case State.ATTACK:
 			//anim.Play ("agressiveJumpBite");
-			anim["biteStandPoseAgressive"].speed = 0.3f;
+			anim["biteStandPoseAgressive"].speed = 0.2f;
 			anim.Play ("biteStandPoseAgressive");
 			break;
 		case State.DIE:
