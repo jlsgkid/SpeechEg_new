@@ -29,6 +29,7 @@ public class Snake : MonoBehaviour {
 	
 	// Use this for initialization
 	void Awake () {
+		dis = Vector3.Distance(transform.position, player.position);
 		state = State.IDLE;
 		anim = this.GetComponent<Animation> ();
 		GameObject playerObj =  GameObject.FindGameObjectWithTag ("Player") as GameObject;
