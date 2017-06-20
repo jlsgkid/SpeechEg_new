@@ -5,75 +5,117 @@ using PathologicalGames;
 
 public class PlayerAttack : MonoBehaviour {
 
+	puboic enum CurseStr  
+	{  
+   	 	Blaze = 0,  
+    		Flash = 1,  
+    		Blink = 2,
+		NONE  = 3
+	} 
+	public CurseStr curseStr = CurseStr.Blaze;
+	//1.Monster
 	[SerializeField] private Fox fox;
-	//Pool
-	public string poolName;
+	[SerializeField] private Snake snake;
+	//[SerializeField] private Spider spider;
+	
+	//2.Curse
+	public GameObject incendio_ps;
+	public LightTransform lightTrans;
+	//public GameObject flash_ps;
+	
 	//public Transform ps_incendio;
 	public GameObject prt;
+	//Mana Bar
 	public circleProcess mana_bar;
 	private EnergyBar eb;
 	public GameObject pos;
-	public GameObject incendio_ps;
+	//Ray
 	private GvrPointerPhysicsRaycaster gvrRay;
-	public Snake snake;
-
-	//fen
-	public LightTransform lightTrans;
-
-	// Use this for initialization
-	void Start () {
+	//Contrl is Down
+	[SerializeField] private bool isAct = false;
+	//音声入力文字列
+	private string speechStr = "";
+	
+	void Awake () {
+		//Rey取得
 		gvrRay = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<GvrPointerPhysicsRaycaster> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		#if UNITY_EDITOR
-		if(Input.GetKeyDown (KeyCode.X) && (mana_bar.GetCurrentAmout() > 45)){
-			DoMana();
-			//gvrRay.getRayObjTag()
-			string objTag = gvrRay.getRayObjTag();
-			if("Snake".Equals(objTag)){
-				
-			}else if("Fox".Equals(objTag)){
-				
-			}else if("Spider".Equals(objTag)){
-				
-			}
-			if(gvrRay.isSnakeGazeIn () == true){
-				//snake
-				snake.GetDamage(40);
-			}
+		if((Input.GetKeyDown (KeyCode.X){
+			isAct = true;
+		}else{
+			isAct = false;
 		}
 		#endif
 		#if UNITY_ANDROID && !UNITY_EDITOR
-		if ((GvrController.ClickButtonDown == true ) && (mana_bar.GetCurrentAmout() > 45)) {
-			DoMana();
-			if(gvrRay.isSnakeGazeIn () == true){
-			//snake
-			snake.GetDamage(40);
-			}
+		if (GvrController.ClickButtonDown == true) {
+			isAct = true;
+		}else{
+			isAct = false;
+		}
+		if(isAct){
+			StartCoroutine (beginSpeech());	
 		}
 		#endif
-
+		//Mana Bar Show or Not
 		if(mana_bar.GetCurrentAmout() >= 100){
 			mana_bar.gameObject.SetActive(false);
+			CurseStr curentStr = DoMana(speechStr);
+			if(curentStr == CurseStr.NONE){
+				//音声未認識
+				
+			}
+			//if(speechStr !="" && speechStr !="" && speechStr !="" && speechStr !="" ){
+			//}
 		}
 
+		    
+	}
+	IEnumerator beginSpeech(){
+		SpeechManager.StartSpeech();
+		yield return new WaitForSeconds(2.0f);
+		speechStr = SpeechManager.GetCurse();
+	}
+		    
+	void Attack(){
+		string objTag = gvrRay.getRayObjTag();
+		if("Snake".Equals(objTag)){
+			snake
+		}else if("Fox".Equals(objTag)){
+				
+		}else if("Spider".Equals(objTag)){
+		}
+		
+		
 	}
 	
-	void DoMana(){
+	void CurseStr DoMana(string speechWord){
 		// get speech from speechManager
-		string speechWord = "BLINK";
+		//string speechWord = "BLINK";
 		if("BLAZE".Equals(speechWord)){
 			//current mana
+			curseStr = CurseStr.Blaze;
 			mana_bar.gameObject.SetActive(true);
 			mana_bar.ChangeManaCir(40);
 			incendio_ps.SetActive(true);
 			StartCoroutine (SetManaDisper(incendio_ps));
 		}else if("BLINK".Equals(speechWord)){
+			curseStr = CurseStr.Blink;
 			mana_bar.gameObject.SetActive(true);
 			mana_bar.ChangeManaCir(90);
 			lightTrans.StartBlink ();
+		}else if("FLASH".Equals(speechWord)){
+			//current mana
+			curseStr = CurseStr.Flash;
+			mana_bar.gameObject.SetActive(true);
+			mana_bar.ChangeManaCir(60);
+			//flash_ps.SetActive(true);
+			//StartCoroutine (SetManaDisper(flash_ps));
+		}else{
+			curseStr = CurseStr.NONE;
 		}
 	}
 	
@@ -104,37 +146,6 @@ public class PlayerAttack : MonoBehaviour {
 		mana_bar.gameObject.SetActive(false);
 		incendio_ps.gameObject.SetActive(false);
 	}
-//	private IEnumerator ParticleSpawner(){
-//		Transform inst;
-//		SpawnPool shapesPool = PoolManager.Pools[this.poolName];
-//		inst = shapesPool.Spawn(this.ps_incendio);
-//		inst.gameObject.SetActive (true);
-//		inst.parent = prt.transform;
-//		//inst.position = pos.transform.position;
-//		//inst.rotation = pos.transform.rotation;
-//		yield return new WaitForSeconds(4.0f);
-//		this.StartCoroutine(DesParticleSpawner());
-//	}
-//
-//	private IEnumerator DesParticleSpawner()
-//	{
-//		SpawnPool shapesPool = PoolManager.Pools[this.poolName];
-//		var spawnedCopy = new List<Transform>(shapesPool);
-//		Debug.Log(shapesPool.ToString());
-//		foreach (Transform instance in spawnedCopy)
-//		{
-//			if (instance.gameObject.activeSelf == true)
-//				shapesPool.Despawn(instance);  // Internal count--
-//		}
-//		yield return null;
-//	}
 
-//	private IEnumerator SetValueCurToFull(){
-//		while (eb.valueCurrent < eb.valueMax) {
-//			eb.valueCurrent = eb.valueCurrent + 1;
-//			yield return null;
-//		}
-//
-//	}
 
 }
