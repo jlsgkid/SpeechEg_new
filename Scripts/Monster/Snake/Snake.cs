@@ -23,7 +23,7 @@ public class Snake : MonoBehaviour {
 	private PlayerState ps;
 	private float timer = 0;
 	private Transform player;
-	public float walkSpeed = 2.0f;
+	public float walkSpeed = 1.0f;
 	//プレイヤーとの距離
 	private float dis = 0.0f;
 	
