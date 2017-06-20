@@ -36,6 +36,8 @@ public class PlayerAttack : MonoBehaviour {
 	[SerializeField] private bool isAct = false;
 	//音声入力文字列
 	private string speechStr = "";
+	//認識できない場合表示するための文字列
+	StringBuilder textSpeech = new StringBuilder ();
 	
 	void Awake () {
 		//Rey取得
@@ -58,11 +60,15 @@ public class PlayerAttack : MonoBehaviour {
 			isAct = false;
 		}
 		if(isAct){
-			StartCoroutine (beginSpeech());	
+			//2017/06/20 PC test
+			speechStr = "BLAZE";
+			
+			//StartCoroutine (beginSpeech());
 			CurseStr curentStr = DoMana(speechStr);
 			if(curentStr == CurseStr.NONE){
 				//音声未認識
 				//UI表示2s後消し
+				textSpeech.text = textSpeech.Append();
 			}else if(curentStr == CurseStr.VALID){
 				//HP不足
 				//UI表示2s後消し
