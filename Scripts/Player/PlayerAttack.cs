@@ -10,7 +10,8 @@ public class PlayerAttack : MonoBehaviour {
    	 	Blaze = 0,  
     		Flash = 1,  
     		Blink = 2,
-		NONE  = 3
+		NONE  = 3,
+		VALID = 4;
 	} 
 	public CurseStr curseStr = CurseStr.Blaze;
 	//1.Monster
@@ -58,22 +59,22 @@ public class PlayerAttack : MonoBehaviour {
 		}
 		if(isAct){
 			StartCoroutine (beginSpeech());	
+			CurseStr curentStr = DoMana(speechStr);
+			if(curentStr == CurseStr.NONE){
+				//音声未認識
+				//UI表示2s後消し
+			}else if(curentStr == CurseStr.VALID){
+				//HP不足
+				//UI表示2s後消し
+			}else{
+				Attack(curentStr);
+			}
 		}
 		#endif
 		//Mana Bar Show or Not
 		if(mana_bar.GetCurrentAmout() >= 100){
 			mana_bar.gameObject.SetActive(false);
-			CurseStr curentStr = DoMana(speechStr);
-			if(curentStr == CurseStr.NONE){
-				//音声未認識
-				//UI表示2s後消し
-			}else{
-				
-			}
-			//if(speechStr !="" && speechStr !="" && speechStr !="" && speechStr !="" ){
-			//}
 		}
-
 		    
 	}
 	IEnumerator beginSpeech(){
@@ -112,20 +113,33 @@ public class PlayerAttack : MonoBehaviour {
 	void CurseStr DoMana(string speechWord){
 		// get speech from speechManager
 		//string speechWord = "BLINK";
+		int currentMana =  mana_bar.GetCurrentAmout();
 		if("BLAZE".Equals(speechWord)){
 			//current mana
+			if(currentMana <= 40){
+				curseStr = CurseStr.VALID;
+				return curseStr;
+			}
 			curseStr = CurseStr.Blaze;
 			mana_bar.gameObject.SetActive(true);
 			mana_bar.ChangeManaCir(40);
 			incendio_ps.SetActive(true);
 			StartCoroutine (SetManaDisper(incendio_ps));
 		}else if("BLINK".Equals(speechWord)){
+			if(currentMana <= 60){
+				curseStr = CurseStr.VALID;
+				return curseStr;
+			}
 			curseStr = CurseStr.Blink;
 			mana_bar.gameObject.SetActive(true);
 			mana_bar.ChangeManaCir(90);
 			lightTrans.StartBlink ();
 		}else if("FLASH".Equals(speechWord)){
 			//current mana
+			if(currentMana <= 80){
+				curseStr = CurseStr.VALID;
+				return curseStr;
+			}
 			curseStr = CurseStr.Flash;
 			mana_bar.gameObject.SetActive(true);
 			mana_bar.ChangeManaCir(60);
@@ -134,24 +148,6 @@ public class PlayerAttack : MonoBehaviour {
 		}else{
 			curseStr = CurseStr.NONE;
 		}
-	}
-	
-	void Attack(){
-		//is Get Right Speech
-		//Test use Input
-		//1.Get ParticleSystem Obj from PoolManager
-			 //After 3s set it Unactived
-		//this.StartCoroutine(ParticleSpawner());
-		incendio_ps.gameObject.SetActive(true);
-		//2.inistite
-		//3.fox damage
-//		if (fox.GetIsContrlEnter () == true) {
-//			fox.GetDamage(20);
-//		}
-		//4.mana circle show change
-		//eb.ChangeMana(450);
-		mana_bar.gameObject.SetActive(true);
-		Invoke ("SetManaInvalid", 3.0f);
 	}
 	
 	private IEnumerator SetManaDisper(GameObject obj_ps){
