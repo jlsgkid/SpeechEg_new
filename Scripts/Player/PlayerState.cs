@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerState : MonoBehaviour {
 
 	public int life = 100;
-	public GameObject life_bar;
 	public VRCameraFade vfade;
 	public Color fadeColor = Color.red; 
 
@@ -15,12 +14,11 @@ public class PlayerState : MonoBehaviour {
 		if (this.life > 0) {
 			this.life -= damage;
 		} else {
-			//GameOver;
+			this.life = 0;
 		}
 	}
 
 	public void xuetiaoFadeIn(){
-		
 		//Camera FadeIn
 		vfade.m_FadeColor = fadeColor;
 		vfade.StartFadeIn (true);
