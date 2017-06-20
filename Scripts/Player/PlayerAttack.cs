@@ -66,6 +66,8 @@ public class PlayerAttack : MonoBehaviour {
 			CurseStr curentStr = DoMana(speechStr);
 			if(curentStr == CurseStr.NONE){
 				//音声未認識
+				//UI表示2s後消し
+			}else{
 				
 			}
 			//if(speechStr !="" && speechStr !="" && speechStr !="" && speechStr !="" ){
@@ -80,18 +82,33 @@ public class PlayerAttack : MonoBehaviour {
 		speechStr = SpeechManager.GetCurse();
 	}
 		    
-	void Attack(){
+	void Attack(CurseStr curentStr){
 		string objTag = gvrRay.getRayObjTag();
 		if("Snake".Equals(objTag)){
-			snake
+			snake.GetDamage(GetRightDamageByCurse(curentStr));
 		}else if("Fox".Equals(objTag)){
-				
+			fox.GetDamage(GetRightDamageByCurse(curentStr));	
 		}else if("Spider".Equals(objTag)){
+			spider.GetDamage(GetRightDamageByCurse(curentStr));
 		}
-		
-		
 	}
-	
+		    
+	private int GetRightDamageByCurse(CurseStr curentStr){
+		int rtnDamage = 0;
+		swith(curentStr){
+			case CurentStr.Blaze:
+			rtnDamage = 30;
+			break;
+			case CurentStr.Flash:
+			rtnDamage = 40;
+			break;	
+			default:
+			rtnDamage = 0;
+			break;					
+		}
+		return rtnDamage;
+	}
+		    
 	void CurseStr DoMana(string speechWord){
 		// get speech from speechManager
 		//string speechWord = "BLINK";
