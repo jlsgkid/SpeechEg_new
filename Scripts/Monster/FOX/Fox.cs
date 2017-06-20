@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Fox : MonoBehaviour {
 
+	//ステータス
 	public enum State
 	{
 		IDLE,
@@ -13,80 +14,62 @@ public class Fox : MonoBehaviour {
 		DIE
 	}
 	public State state;
+	//アニメ
 	private Animation anim;
+	//生命
 	[SerializeField]
-	private Transform player;
-	public float walkSpeed = 2.0f;
-	[SerializeField]
-	private int life = 100;
-	[SerializeField]
-	private bool isContrlEnter = false;
-	public bool GetIsContrlEnter(){
-		return this.isContrlEnter;
-	}
+	private int life = 60;
 	public Slider xuetiao;
-	//public GameObject life_bar;
-	private PlayerState ps;
+	private Transform player;
 	private float timer = 0;
+	private PlayerState ps;
+	public float walkSpeed = 3.0f;
+	//プレイヤーとの距離
+	private float dis = 0.0f;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
+		dis = Vector3.Distance(transform.position, player.position);
 		state = State.IDLE;
 		anim = this.GetComponent<Animation> ();
-		player = GameObject.FindGameObjectWithTag ("Player").transform;
-		ps = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerState> ();
+		GameObject playerObj =  GameObject.FindGameObjectWithTag ("Player") as GameObject;
+		player = playerObj.transform;
+		ps = playerObj.GetComponent<PlayerState> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (this.life < 0) {
-			state = State.DIE;
-		}
-		if(state == State.DIE){
-			xuetiao.gameObject.SetActive (false);
-			Destroy (this.gameObject, 3.0f);
-			return;
-		}
-		//player and fox distance
+		AnimationControl();
 		xuetiao.value = this.life;
 		timer += Time.deltaTime;
-		float dis = Vector3.Distance(transform.position, player.position);
+		if (this.life < 0) {
+			state = State.DIE;
+			xuetiao.gameObject.SetActive (false);
+			Destroy (this.gameObject, 2.5f);
+			return;
+		}
+		dis = Vector3.Distance(transform.position, player.position);
 		//Debug.Log (dis);
 		if (dis < 10 && dis > 2.3) {
 			state = State.WALK;
 			xuetiao.gameObject.SetActive (true);
-			//life_bar.SetActive (true);
 			WalkToPlay ();
 		} else if (dis < 2.3) {
 			state = State.ATTACK;
 		} else if(this.life > 0){
 			state = State.IDLE;
 		}
-
-		//set animation
-		AnimationControl();
-			
 		if(state == State.ATTACK){
+			//狼の攻撃間
 			if(timer > 1.0f){
 				ps.GetDamage (30);
 				ps.xuetiaoFadeIn ();
 				timer = 0;
 			}
 		}
-//		else{
-//			life_bar.gameObject.SetActive (false);
-//		}
-		//Debug.Log ("isContrlEnter: " + isContrlEnter);
-
 	}
-	public void vrContrlEnter(){
-		isContrlEnter = true;
-	}
-	public void vrContrlExit(){
-		isContrlEnter = false; 
-	}
-
-	void WalkToPlay(){
+	
+	private void WalkToPlay(){
 		transform.rotation = Quaternion.Slerp(transform.rotation, 
 			Quaternion.LookRotation(player.position-transform.position), walkSpeed * Time.deltaTime);
 		transform.position += transform.forward * walkSpeed * Time.deltaTime;
@@ -102,7 +85,6 @@ public class Fox : MonoBehaviour {
 	}
 
 	private void AnimationControl(){
-
 		switch (state) {
 		case State.IDLE:
 			anim.Play ("idleLookAround");
@@ -119,6 +101,5 @@ public class Fox : MonoBehaviour {
 			break;
 		}
 	}
-
 
 }
