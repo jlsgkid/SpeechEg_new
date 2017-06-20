@@ -22,17 +22,23 @@ public class PlayerAttack : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//eb = mana_bar.GetComponent<EnergyBar> ();
 		gvrRay = GameObject.FindGameObjectWithTag ("MainCamera").GetComponent<GvrPointerPhysicsRaycaster> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
 		#if UNITY_EDITOR
 		if(Input.GetKeyDown (KeyCode.X) && (mana_bar.GetCurrentAmout() > 45)){
 			DoMana();
-			//Debug.Log("sasa0000---:" + gvrRay.isSnakeGazeIn ());
+			//gvrRay.getRayObjTag()
+			string objTag = gvrRay.getRayObjTag();
+			if("Snake".Equals(objTag)){
+				
+			}else if("Fox".Equals(objTag)){
+				
+			}else if("Spider".Equals(objTag)){
+				
+			}
 			if(gvrRay.isSnakeGazeIn () == true){
 				//snake
 				snake.GetDamage(40);
@@ -53,12 +59,6 @@ public class PlayerAttack : MonoBehaviour {
 			mana_bar.gameObject.SetActive(false);
 		}
 
-		//if (fox.GetIsContrlEnter () == true) {
-
-		//}
-//		if(eb.valueCurrent < eb.valueMax){
-//			StartCoroutine(SetValueCurToFull());
-//		}
 	}
 	
 	void DoMana(){
