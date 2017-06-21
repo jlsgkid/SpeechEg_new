@@ -1,0 +1,38 @@
+EventTrigger listener
+ /// <summary>
+    /// 添加EventTrigger的监听事件
+    /// </summary>
+    /// <param name="obj">添加监听的对象</param>
+    /// <param name="eventID">添加的监听类型</param>
+    /// <param name="action">触发方法</param>
+    private void AddTriggersListener(GameObject obj, EventTriggerType eventID, UnityAction<BaseEventData> action)
+    {
+        EventTrigger trigger;
+        if (obj.GetComponent<EventTrigger>() != null)
+        {
+            trigger = obj.GetComponent<EventTrigger>();
+        }
+        else
+        {
+            trigger = obj.AddComponent<EventTrigger>();
+        }
+
+        if (trigger.triggers.Count == 0)
+        {
+            trigger.triggers = new List<EventTrigger.Entry>();
+        }
+
+        UnityAction<BaseEventData> callback = new UnityAction<BaseEventData>(action);
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = eventID;
+        entry.callback.AddListener(callback);
+        trigger.triggers.Add(entry);
+    }
+    
+    使用示例：
+    //播放进度条EventTrigger监听
+    AddTriggersListener(sliderProgressBar.gameObject, EventTriggerType.PointerEnter, OnVideoPointerEnter);
+    AddTriggersListener(sliderProgressBar.gameObject, EventTriggerType.PointerExit, OnVideoPointerExit);
+    AddTriggersListener(sliderProgressBar.gameObject, EventTriggerType.PointerClick, OnVideoPointerClick);
+    AddTriggersListener(sliderProgressBar.gameObject, EventTriggerType.BeginDrag, OnVideoBeginDrag);
+    AddTriggersListener(sliderProgressBar.gameObject, EventTriggerType.EndDrag, OnVideoEndDrag); 
