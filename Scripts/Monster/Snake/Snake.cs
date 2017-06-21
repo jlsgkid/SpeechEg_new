@@ -26,6 +26,7 @@ public class Snake : MonoBehaviour {
 	public float walkSpeed = 1.0f;
 	//プレイヤーとの距離
 	private float dis = 0.0f;
+	[SerializeField] private bool isGazeIn = false;
 	
 	// Use this for initialization
 	void Awake () {
@@ -110,6 +111,16 @@ public class Snake : MonoBehaviour {
 			//anim.Play ("Take 001");
 			break;
 		}
+	}
+	
+	void ContrlPointerEnter(){
+		isGazeIn = true;
+	}
+	void ContrlPointerExit(){
+		isGazeIn = false;
+	}
+	public bool GetIsGazeIn(){
+		return isGazeIn;
 	}
 
 }
