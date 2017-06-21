@@ -36,3 +36,24 @@ EventTrigger listener
     AddTriggersListener(sliderProgressBar.gameObject, EventTriggerType.PointerClick, OnVideoPointerClick);
     AddTriggersListener(sliderProgressBar.gameObject, EventTriggerType.BeginDrag, OnVideoBeginDrag);
     AddTriggersListener(sliderProgressBar.gameObject, EventTriggerType.EndDrag, OnVideoEndDrag); 
+    
+    
+    public class GameManager : MonoBehaviour 
+{
+        void Start()
+        {
+                UnityAction<BaseEventData> click = new UnityAction<BaseEventData> (MyClick);
+                EventTrigger.Entry myclick = new EventTrigger.Entry ();
+                myclick.eventID = EventTriggerType.PointerClick;
+                myclick.callback.AddListener (click);
+
+                EventTrigger trigger = gameObject.AddComponent<EventTrigger> ();
+                trigger.triggers.Add (myclick);
+        }
+
+
+        public void MyClick(BaseEventData data)
+        {
+                Debug.Log ("点击");
+        }
+}
