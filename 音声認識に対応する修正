@@ -1,0 +1,59 @@
+音声認識に対応する修正
+
+Eclipse JAVA：
+
+//设置是否带标点符号 0表示不带标点，1则表示带标点。  
+mIat.setParameter(SpeechConstant.ASR_PTT, "0");  
+
+//只有设置这个属性为1时,VAD_BOS  VAD_EOS才会生效,且RecognizerListener.onVolumeChanged才有音量返回默认：1 
+mIat.setParameter(SpeechConstant.VAD_ENABLE,"1"); 
+
+//设置语音前端点:静音超时时间，即用户多长时间不说话则当做超时处理1000~10000  
+mIat.setParameter(SpeechConstant.VAD_BOS, "1000")
+
+// 设置语音后端点:后端点静音检测时间，即用户停止说话多长时间内即认为不再输入， 自动停止录音0~10000  
+mIat.setParameter(SpeechConstant.VAD_EOS, "0");  
+
+という設定でテストする予定
+
+C#:
+-> PlayerAttack
+
+	IEnumerator beginSpeech(){
+		SpeechManager.StartSpeech();
+		speechStr = SpeechManager.GetCurse();
+    yield return null;
+   }
+   -> speechStr
+   
+   呼び出しところで：
+   bool isCanSpeech = true;  //head
+ void(){  
+    ...
+    if(isAct){ //double click
+       if(isCanSpeech){ //is not Speaking
+          beginSpeech();
+       }
+       if(speechStr == "Speech Begin"){
+          isCanSpeech = false;
+       }else if(speechStr == "Speech End")[
+          isCanSpeech = true;
+       }else{
+          isCanSpeech = false;
+          CurseStr curentStr = DoMana(speechStr);
+          if(curentStr == CurseStr.NONE){
+                //音声未認識
+                //UI表示2s後消し
+                //textSpeech.text = textSpeech.Append();
+            }else if(curentStr == CurseStr.VALID){
+                //HP不足
+                //UI表示2s後消し
+            }else{
+              Attack(curentStr);
+            }
+       }//OK
+     }
+     
+    
+
+	
